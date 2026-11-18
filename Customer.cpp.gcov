@@ -1,0 +1,575 @@
+        -:    0:Source:src/Customer.cpp
+        -:    0:Graph:test_customer-Customer.gcno
+        -:    0:Data:test_customer-Customer.gcda
+        -:    0:Runs:1
+        -:    1:
+        -:    2:#include "Customer.h"
+        -:    3:
+        -:    4:#include <iostream>
+        -:    5:#include <iomanip>
+        -:    6:#include <limits>
+        -:    7:#include <sqlite3.h>
+        -:    8:
+        -:    9:using namespace std;
+        -:   10:
+        -:   11:// Constructor
+       16:   12:CustomerManager::CustomerManager(
+        -:   13:    Database& db,
+        -:   14:    int id,
+       16:   15:    const string& name)
+       16:   16:    : database(db), userId(id), username(name)
+        -:   17:{
+       16:   18:}
+        -:   19:
+        -:   20:// Display available products
+        8:   21:void CustomerManager::displayProducts()
+        -:   22:{
+        8:   23:    const char* sql =
+        -:   24:        "SELECT product_id, name, quantity, price "
+        -:   25:        "FROM products "
+        -:   26:        "WHERE is_active = 1 AND quantity > 0 "
+        -:   27:        "ORDER BY product_id;";
+        -:   28:
+        8:   29:    sqlite3_stmt* stmt = nullptr;
+        -:   30:
+        8:   31:    sqlite3_prepare_v2(
+        8:   32:        database.getConnection(),
+        -:   33:        sql, -1, &stmt, nullptr
+        -:   34:    );
+        -:   35:
+        8:   36:    cout << "\n========== AVAILABLE PRODUCTS ==========\n";
+        -:   37:
+        8:   38:    cout << left << setw(10) << "ID"
+        -:   39:         << setw(22) << "Name"
+        -:   40:         << setw(12) << "Stock"
+        8:   41:         << "Price\n";
+        -:   42:
+        8:   43:    bool found = false;
+        -:   44:
+       24:   45:    while (sqlite3_step(stmt) == SQLITE_ROW)
+        -:   46:    {
+       16:   47:        found = true;
+        -:   48:
+       16:   49:        cout << left
+       16:   50:             << setw(10) << sqlite3_column_int(stmt, 0)
+        -:   51:             << setw(22) << sqlite3_column_text(stmt, 1)
+       16:   52:             << setw(12) << sqlite3_column_int(stmt, 2)
+       16:   53:             << fixed << setprecision(2)
+       16:   54:             << sqlite3_column_double(stmt, 3)
+       16:   55:             << "\n";
+        -:   56:    }
+        -:   57:
+        8:   58:    if (!found)
+    #####:   59:        cout << "No products available!\n";
+        -:   60:
+        8:   61:    sqlite3_finalize(stmt);
+        8:   62:}
+        -:   63:
+        -:   64:// Search products
+        3:   65:void CustomerManager::searchProducts()
+        -:   66:{
+        3:   67:    string name;
+        -:   68:
+        3:   69:    cout << "\nEnter product name: ";
+        3:   70:    getline(cin >> ws, name);
+        -:   71:
+        3:   72:    const char* sql =
+        -:   73:        "SELECT product_id, name, quantity, price "
+        -:   74:        "FROM products "
+        -:   75:        "WHERE name LIKE ? AND is_active = 1 "
+        -:   76:        "AND quantity > 0;";
+        -:   77:
+        3:   78:    sqlite3_stmt* stmt = nullptr;
+        -:   79:
+        3:   80:    sqlite3_prepare_v2(
+        3:   81:        database.getConnection(),
+        -:   82:        sql, -1, &stmt, nullptr
+        -:   83:    );
+        -:   84:
+        3:   85:    string search = "%" + name + "%";
+        -:   86:
+        3:   87:    sqlite3_bind_text(
+        -:   88:        stmt, 1, search.c_str(), -1, SQLITE_TRANSIENT
+        -:   89:    );
+        -:   90:
+        3:   91:    bool found = false;
+        -:   92:
+        5:   93:    while (sqlite3_step(stmt) == SQLITE_ROW)
+        -:   94:    {
+        2:   95:        found = true;
+        -:   96:
+        2:   97:        cout << "\nProduct ID: "
+        2:   98:             << sqlite3_column_int(stmt, 0);
+        -:   99:
+        -:  100:        cout << "\nName: "
+        2:  101:             << sqlite3_column_text(stmt, 1);
+        -:  102:
+        2:  103:        cout << "\nStock: "
+        2:  104:             << sqlite3_column_int(stmt, 2);
+        -:  105:
+        2:  106:        cout << "\nPrice: Rs. "
+        2:  107:             << sqlite3_column_double(stmt, 3)
+        2:  108:             << "\n";
+        -:  109:    }
+        -:  110:
+        3:  111:    if (!found)
+        1:  112:        cout << "\nProduct not found!\n";
+        -:  113:
+        3:  114:    sqlite3_finalize(stmt);
+        3:  115:}
+        -:  116:
+        -:  117:// Add product to cart
+        6:  118:void CustomerManager::addToCart()
+        -:  119:{
+        -:  120:    int id, quantity;
+        -:  121:
+        6:  122:    displayProducts();
+        -:  123:
+        6:  124:    cout << "\nEnter Product ID: ";
+        -:  125:
+        6:  126:    if (!(cin >> id) || id <= 0)
+        -:  127:    {
+        1:  128:        cout << "Invalid product ID!\n";
+        1:  129:        cin.clear();
+        1:  130:        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        6:  131:        return;
+        -:  132:    }
+        -:  133:
+        5:  134:    cout << "Enter Quantity: ";
+        -:  135:
+        5:  136:    if (!(cin >> quantity) || quantity <= 0)
+        -:  137:    {
+        1:  138:        cout << "Invalid quantity!\n";
+        1:  139:        cin.clear();
+        1:  140:        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        1:  141:        return;
+        -:  142:    }
+        -:  143:
+        4:  144:    const char* sql =
+        -:  145:        "SELECT name, quantity, price FROM products "
+        -:  146:        "WHERE product_id = ? AND is_active = 1;";
+        -:  147:
+        4:  148:    sqlite3_stmt* stmt = nullptr;
+        -:  149:
+        4:  150:    sqlite3_prepare_v2(
+        4:  151:        database.getConnection(),
+        -:  152:        sql, -1, &stmt, nullptr
+        -:  153:    );
+        -:  154:
+        4:  155:    sqlite3_bind_int(stmt, 1, id);
+        -:  156:
+        4:  157:    if (sqlite3_step(stmt) != SQLITE_ROW)
+        -:  158:    {
+        4:  159:        cout << "\nProduct not found!\n";
+        4:  160:        sqlite3_finalize(stmt);
+        4:  161:        return;
+        -:  162:    }
+        -:  163:
+        -:  164:    string name = reinterpret_cast<const char*>(
+    #####:  165:        sqlite3_column_text(stmt, 0)
+    #####:  166:    );
+        -:  167:
+    #####:  168:    int stock = sqlite3_column_int(stmt, 1);
+        -:  169:
+    #####:  170:    double price = sqlite3_column_double(stmt, 2);
+        -:  171:
+    #####:  172:    sqlite3_finalize(stmt);
+        -:  173:
+    #####:  174:    int alreadyInCart = 0;
+        -:  175:
+    #####:  176:    for (const auto& item : cart)
+        -:  177:    {
+    #####:  178:        if (item.productId == id)
+    #####:  179:            alreadyInCart += item.quantity;
+        -:  180:    }
+        -:  181:
+    #####:  182:    if (quantity + alreadyInCart > stock)
+        -:  183:    {
+    #####:  184:        cout << "\nInsufficient stock!\n";
+    #####:  185:        cout << "Available stock: " << stock - alreadyInCart << "\n";
+    #####:  186:        return;
+        -:  187:    }
+        -:  188:
+        -:  189:    // Add to existing cart item if present
+    #####:  190:    for (auto& item : cart)
+        -:  191:    {
+    #####:  192:        if (item.productId == id)
+        -:  193:        {
+    #####:  194:            item.quantity += quantity;
+        -:  195:
+    #####:  196:            cout << "\nCart quantity updated!\n";
+    #####:  197:            return;
+        -:  198:        }
+        -:  199:    }
+        -:  200:
+    #####:  201:    CartItem item;
+        -:  202:
+    #####:  203:    item.productId = id;
+    #####:  204:    item.name = name;
+    #####:  205:    item.quantity = quantity;
+    #####:  206:    item.price = price;
+        -:  207:
+    #####:  208:    cart.push_back(item);
+        -:  209:
+    #####:  210:    cout << "\nProduct added to cart successfully!\n";
+    #####:  211:}
+        -:  212:
+        -:  213:// View cart
+        2:  214:void CustomerManager::viewCart()
+        -:  215:{
+        2:  216:    if (cart.empty())
+        -:  217:    {
+        2:  218:        cout << "\nYour cart is empty!\n";
+        2:  219:        return;
+        -:  220:    }
+        -:  221:
+    #####:  222:    double total = 0;
+        -:  223:
+    #####:  224:    cout << "\n========== YOUR CART ==========\n";
+        -:  225:
+    #####:  226:    cout << left << setw(20) << "Product"
+        -:  227:         << setw(10) << "Quantity"
+        -:  228:         << setw(12) << "Price"
+    #####:  229:         << "Total\n";
+        -:  230:
+    #####:  231:    for (const auto& item : cart)
+        -:  232:    {
+    #####:  233:        double itemTotal = item.quantity * item.price;
+        -:  234:
+    #####:  235:        cout << left << setw(20) << item.name
+    #####:  236:             << setw(10) << item.quantity
+    #####:  237:             << setw(12) << fixed << setprecision(2)
+    #####:  238:             << item.price
+    #####:  239:             << itemTotal << "\n";
+        -:  240:
+    #####:  241:        total += itemTotal;
+        -:  242:    }
+        -:  243:
+    #####:  244:    cout << "\nGrand Total: Rs. "
+    #####:  245:         << fixed << setprecision(2) << total << "\n";
+        -:  246:}
+        -:  247:
+        -:  248:// Checkout and generate bill
+    #####:  249:bool CustomerManager::checkout()
+        -:  250:{
+    #####:  251:    if (cart.empty())
+        -:  252:    {
+    #####:  253:        cout << "\nYour cart is empty!\n";
+    #####:  254:        return false;
+        -:  255:    }
+        -:  256:
+    #####:  257:    double grandTotal = 0;
+        -:  258:
+    #####:  259:    for (const auto& item : cart)
+    #####:  260:        grandTotal += item.quantity * item.price;
+        -:  261:
+        -:  262:    char confirm;
+        -:  263:
+    #####:  264:    viewCart();
+        -:  265:
+    #####:  266:    cout << "\nConfirm Purchase? (Y/N): ";
+    #####:  267:    cin >> confirm;
+        -:  268:
+    #####:  269:    if (confirm != 'Y' && confirm != 'y')
+        -:  270:    {
+    #####:  271:        cout << "\nPurchase cancelled!\n";
+    #####:  272:        return false;
+        -:  273:    }
+        -:  274:
+        -:  275:    // Start transaction
+    #####:  276:    if (!database.execute("BEGIN IMMEDIATE;"))
+        -:  277:    {
+    #####:  278:        cout << "Could not start checkout!\n";
+    #####:  279:        return false;
+        -:  280:    }
+        -:  281:
+    #####:  282:    bool success = true;
+        -:  283:
+        -:  284:    // Create order
+    #####:  285:    const char* orderSQL =
+        -:  286:        "INSERT INTO orders(user_id, total_amount, status) "
+        -:  287:        "VALUES(?, ?, 'completed');";
+        -:  288:
+    #####:  289:    sqlite3_stmt* stmt = nullptr;
+        -:  290:
+    #####:  291:    if (sqlite3_prepare_v2(
+    #####:  292:            database.getConnection(),
+    #####:  293:            orderSQL, -1, &stmt, nullptr) != SQLITE_OK)
+        -:  294:    {
+    #####:  295:        success = false;
+        -:  296:    }
+        -:  297:
+    #####:  298:    if (success)
+        -:  299:    {
+    #####:  300:        sqlite3_bind_int(stmt, 1, userId);
+    #####:  301:        sqlite3_bind_double(stmt, 2, grandTotal);
+        -:  302:
+    #####:  303:        if (sqlite3_step(stmt) != SQLITE_DONE)
+    #####:  304:            success = false;
+        -:  305:    }
+        -:  306:
+    #####:  307:    sqlite3_finalize(stmt);
+        -:  308:
+    #####:  309:    sqlite3_int64 orderId = 0;
+        -:  310:
+    #####:  311:    if (success)
+    #####:  312:        orderId = sqlite3_last_insert_rowid(database.getConnection());
+        -:  313:
+        -:  314:    // Update stock and insert order items
+    #####:  315:    for (const auto& item : cart)
+        -:  316:    {
+    #####:  317:        if (!success)
+    #####:  318:            break;
+        -:  319:
+    #####:  320:        const char* stockSQL =
+        -:  321:            "UPDATE products SET quantity = quantity - ? "
+        -:  322:            "WHERE product_id = ? "
+        -:  323:            "AND is_active = 1 AND quantity >= ?;";
+        -:  324:
+    #####:  325:        stmt = nullptr;
+        -:  326:
+    #####:  327:        if (sqlite3_prepare_v2(
+    #####:  328:                database.getConnection(),
+    #####:  329:                stockSQL, -1, &stmt, nullptr) != SQLITE_OK)
+        -:  330:        {
+    #####:  331:            success = false;
+    #####:  332:            break;
+        -:  333:        }
+        -:  334:
+    #####:  335:        sqlite3_bind_int(stmt, 1, item.quantity);
+    #####:  336:        sqlite3_bind_int(stmt, 2, item.productId);
+    #####:  337:        sqlite3_bind_int(stmt, 3, item.quantity);
+        -:  338:
+    #####:  339:        int result = sqlite3_step(stmt);
+        -:  340:
+        -:  341:        bool stockUpdated =
+    #####:  342:            result == SQLITE_DONE &&
+    #####:  343:            sqlite3_changes(database.getConnection()) == 1;
+        -:  344:
+    #####:  345:        sqlite3_finalize(stmt);
+        -:  346:
+    #####:  347:        if (!stockUpdated)
+        -:  348:        {
+    #####:  349:            success = false;
+    #####:  350:            break;
+        -:  351:        }
+        -:  352:
+    #####:  353:        const char* itemSQL =
+        -:  354:            "INSERT INTO order_items "
+        -:  355:            "(order_id, product_id, product_name, quantity, "
+        -:  356:            "unit_price, line_total) "
+        -:  357:            "VALUES(?, ?, ?, ?, ?, ?);";
+        -:  358:
+    #####:  359:        stmt = nullptr;
+        -:  360:
+    #####:  361:        if (sqlite3_prepare_v2(
+    #####:  362:                database.getConnection(),
+    #####:  363:                itemSQL, -1, &stmt, nullptr) != SQLITE_OK)
+        -:  364:        {
+    #####:  365:            success = false;
+    #####:  366:            break;
+        -:  367:        }
+        -:  368:
+    #####:  369:        sqlite3_bind_int64(stmt, 1, orderId);
+    #####:  370:        sqlite3_bind_int(stmt, 2, item.productId);
+        -:  371:
+    #####:  372:        sqlite3_bind_text(
+        -:  373:            stmt, 3, item.name.c_str(), -1, SQLITE_TRANSIENT
+        -:  374:        );
+        -:  375:
+    #####:  376:        sqlite3_bind_int(stmt, 4, item.quantity);
+    #####:  377:        sqlite3_bind_double(stmt, 5, item.price);
+        -:  378:
+    #####:  379:        sqlite3_bind_double(
+    #####:  380:            stmt, 6, item.quantity * item.price
+        -:  381:        );
+        -:  382:
+    #####:  383:        if (sqlite3_step(stmt) != SQLITE_DONE)
+    #####:  384:            success = false;
+        -:  385:
+    #####:  386:        sqlite3_finalize(stmt);
+        -:  387:    }
+        -:  388:
+        -:  389:    // Record cash payment
+    #####:  390:    if (success)
+        -:  391:    {
+    #####:  392:        const char* paymentSQL =
+        -:  393:            "INSERT INTO payments "
+        -:  394:            "(order_id, amount, payment_method, payment_status) "
+        -:  395:            "VALUES(?, ?, 'Cash', 'completed');";
+        -:  396:
+    #####:  397:        stmt = nullptr;
+        -:  398:
+    #####:  399:        if (sqlite3_prepare_v2(
+    #####:  400:                database.getConnection(),
+    #####:  401:                paymentSQL, -1, &stmt, nullptr) != SQLITE_OK)
+        -:  402:        {
+    #####:  403:            success = false;
+        -:  404:        }
+        -:  405:        else
+        -:  406:        {
+    #####:  407:            sqlite3_bind_int64(stmt, 1, orderId);
+    #####:  408:            sqlite3_bind_double(stmt, 2, grandTotal);
+        -:  409:
+    #####:  410:            if (sqlite3_step(stmt) != SQLITE_DONE)
+    #####:  411:                success = false;
+        -:  412:        }
+        -:  413:
+    #####:  414:        sqlite3_finalize(stmt);
+        -:  415:    }
+        -:  416:
+        -:  417:    // Commit or rollback
+    #####:  418:    if (success)
+        -:  419:    {
+    #####:  420:        success = database.execute("COMMIT;");
+        -:  421:    }
+        -:  422:
+    #####:  423:    if (!success)
+        -:  424:    {
+    #####:  425:        database.execute("ROLLBACK;");
+    #####:  426:        cout << "\nPurchase failed! Database changes rolled back.\n";
+    #####:  427:        return false;
+        -:  428:    }
+        -:  429:
+        -:  430:    // Generate bill
+    #####:  431:    cout << "\n========== FINAL BILL ==========\n";
+    #####:  432:    cout << "Order ID: " << orderId << "\n";
+    #####:  433:    cout << "Customer: " << username << "\n";
+        -:  434:
+    #####:  435:    cout << "--------------------------------\n";
+        -:  436:
+    #####:  437:    for (const auto& item : cart)
+        -:  438:    {
+    #####:  439:        cout << item.name
+    #####:  440:             << " x " << item.quantity
+    #####:  441:             << " = Rs. "
+    #####:  442:             << item.quantity * item.price
+    #####:  443:             << "\n";
+        -:  444:    }
+        -:  445:
+    #####:  446:    cout << "--------------------------------\n";
+        -:  447:
+    #####:  448:    cout << "Grand Total: Rs. "
+    #####:  449:         << fixed << setprecision(2)
+    #####:  450:         << grandTotal << "\n";
+        -:  451:
+    #####:  452:    cout << "Payment: Cash\n";
+    #####:  453:    cout << "Status: Successful\n";
+        -:  454:
+    #####:  455:    cout << "\nThank you for shopping!\n";
+        -:  456:
+    #####:  457:    cart.clear();
+        -:  458:
+    #####:  459:    return true;
+        -:  460:}
+        -:  461:
+        -:  462:// Customer order history
+        2:  463:void CustomerManager::viewOrderHistory()
+        -:  464:{
+        2:  465:    const char* sql =
+        -:  466:        "SELECT order_id, total_amount, status, order_date "
+        -:  467:        "FROM orders WHERE user_id = ? "
+        -:  468:        "ORDER BY order_id DESC;";
+        -:  469:
+        2:  470:    sqlite3_stmt* stmt = nullptr;
+        -:  471:
+        2:  472:    sqlite3_prepare_v2(
+        2:  473:        database.getConnection(),
+        -:  474:        sql, -1, &stmt, nullptr
+        -:  475:    );
+        -:  476:
+        2:  477:    sqlite3_bind_int(stmt, 1, userId);
+        -:  478:
+        2:  479:    cout << "\n========== MY ORDER HISTORY ==========\n";
+        -:  480:
+        2:  481:    bool found = false;
+        -:  482:
+        2:  483:    while (sqlite3_step(stmt) == SQLITE_ROW)
+        -:  484:    {
+    #####:  485:        found = true;
+        -:  486:
+    #####:  487:        cout << "\nOrder ID: "
+    #####:  488:             << sqlite3_column_int(stmt, 0);
+        -:  489:
+    #####:  490:        cout << "\nAmount: Rs. "
+    #####:  491:             << sqlite3_column_double(stmt, 1);
+        -:  492:
+        -:  493:        cout << "\nStatus: "
+    #####:  494:             << sqlite3_column_text(stmt, 2);
+        -:  495:
+        -:  496:        cout << "\nDate: "
+    #####:  497:             << sqlite3_column_text(stmt, 3);
+        -:  498:
+    #####:  499:        cout << "\n";
+        -:  500:    }
+        -:  501:
+        2:  502:    if (!found)
+        2:  503:        cout << "No previous orders!\n";
+        -:  504:
+        2:  505:    sqlite3_finalize(stmt);
+        2:  506:}
+        -:  507:
+        -:  508:// Customer menu
+        4:  509:void CustomerManager::customerMenu()
+        -:  510:{
+        -:  511:    int choice;
+        -:  512:
+        -:  513:    do
+        -:  514:    {
+        7:  515:        cout << "\n========== CUSTOMER DASHBOARD ==========\n";
+        -:  516:
+        7:  517:        cout << "1. View Products\n";
+        7:  518:        cout << "2. Search Products\n";
+        7:  519:        cout << "3. Add to Cart\n";
+        7:  520:        cout << "4. View Cart\n";
+        7:  521:        cout << "5. Checkout\n";
+        7:  522:        cout << "6. Order History\n";
+        7:  523:        cout << "0. Logout\n";
+        -:  524:
+        7:  525:        cout << "\nEnter Choice: ";
+        -:  526:
+       7*:  527:        if (!(cin >> choice))
+        -:  528:        {
+    #####:  529:            cout << "Invalid input!\n";
+    #####:  530:            cin.clear();
+    #####:  531:            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    #####:  532:            continue;
+        -:  533:        }
+        -:  534:
+        7:  535:        switch (choice)
+        -:  536:        {
+        1:  537:            case 1:
+        1:  538:                displayProducts();
+        1:  539:                break;
+        -:  540:
+        1:  541:            case 2:
+        1:  542:                searchProducts();
+        1:  543:                break;
+        -:  544:
+    #####:  545:            case 3:
+    #####:  546:                addToCart();
+    #####:  547:                break;
+        -:  548:
+    #####:  549:            case 4:
+    #####:  550:                viewCart();
+    #####:  551:                break;
+        -:  552:
+    #####:  553:            case 5:
+    #####:  554:                checkout();
+    #####:  555:                break;
+        -:  556:
+    #####:  557:            case 6:
+    #####:  558:                viewOrderHistory();
+    #####:  559:                break;
+        -:  560:
+        4:  561:            case 0:
+        4:  562:                cart.clear();
+        4:  563:                cout << "\nCustomer Logged Out!\n";
+        4:  564:                break;
+        -:  565:
+        1:  566:            default:
+        1:  567:                cout << "\nInvalid Choice!\n";
+        -:  568:        }
+        -:  569:
+        7:  570:    } while (choice != 0);
+        4:  571:}

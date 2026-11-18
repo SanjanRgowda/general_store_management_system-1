@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites tests="16" failures="0" disabled="0" errors="0" time="0.313" timestamp="2026-11-18T19:42:13.363" name="AllTests">
+  <testsuite name="CustomerTest" tests="16" failures="0" disabled="0" skipped="0" errors="0" time="0.312" timestamp="2026-11-18T19:42:13.363">
+    <testcase name="DisplayProducts" file="src/test_customer.cpp" line="55" status="run" result="completed" time="0.015" timestamp="2026-11-18T19:42:13.363" classname="CustomerTest" />
+    <testcase name="SearchProductFound" file="src/test_customer.cpp" line="64" status="run" result="completed" time="0.019" timestamp="2026-11-18T19:42:13.378" classname="CustomerTest" />
+    <testcase name="SearchProductNotFound" file="src/test_customer.cpp" line="78" status="run" result="completed" time="0.021" timestamp="2026-11-18T19:42:13.398" classname="CustomerTest" />
+    <testcase name="AddToCartSuccess" file="src/test_customer.cpp" line="92" status="run" result="completed" time="0.025" timestamp="2026-11-18T19:42:13.419" classname="CustomerTest" />
+    <testcase name="AddToCartInvalidProductId" file="src/test_customer.cpp" line="106" status="run" result="completed" time="0.025" timestamp="2026-11-18T19:42:13.444" classname="CustomerTest" />
+    <testcase name="AddToCartInvalidQuantity" file="src/test_customer.cpp" line="120" status="run" result="completed" time="0.019" timestamp="2026-11-18T19:42:13.470" classname="CustomerTest" />
+    <testcase name="AddToCartProductNotFound" file="src/test_customer.cpp" line="134" status="run" result="completed" time="0.017" timestamp="2026-11-18T19:42:13.489" classname="CustomerTest" />
+    <testcase name="AddToCartInsufficientStock" file="src/test_customer.cpp" line="148" status="run" result="completed" time="0.015" timestamp="2026-11-18T19:42:13.506" classname="CustomerTest" />
+    <testcase name="ViewEmptyCart" file="src/test_customer.cpp" line="162" status="run" result="completed" time="0.014" timestamp="2026-11-18T19:42:13.522" classname="CustomerTest" />
+    <testcase name="ViewCartWithItems" file="src/test_customer.cpp" line="171" status="run" result="completed" time="0.028" timestamp="2026-11-18T19:42:13.537" classname="CustomerTest" />
+    <testcase name="EmptyOrderHistory" file="src/test_customer.cpp" line="189" status="run" result="completed" time="0.02" timestamp="2026-11-18T19:42:13.565" classname="CustomerTest" />
+    <testcase name="ExistingOrderHistory" file="src/test_customer.cpp" line="198" status="run" result="completed" time="0.017" timestamp="2026-11-18T19:42:13.586" classname="CustomerTest" />
+    <testcase name="CustomerMenuLogout" file="src/test_customer.cpp" line="212" status="run" result="completed" time="0.018" timestamp="2026-11-18T19:42:13.603" classname="CustomerTest" />
+    <testcase name="CustomerMenuInvalidChoice" file="src/test_customer.cpp" line="226" status="run" result="completed" time="0.02" timestamp="2026-11-18T19:42:13.621" classname="CustomerTest" />
+    <testcase name="CustomerMenuViewProducts" file="src/test_customer.cpp" line="240" status="run" result="completed" time="0.016" timestamp="2026-11-18T19:42:13.641" classname="CustomerTest" />
+    <testcase name="CustomerMenuSearchProduct" file="src/test_customer.cpp" line="254" status="run" result="completed" time="0.017" timestamp="2026-11-18T19:42:13.658" classname="CustomerTest" />
+  </testsuite>
+</testsuites>

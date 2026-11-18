@@ -1,0 +1,353 @@
+        -:    0:Source:src/Authentication.cpp
+        -:    0:Graph:test_auth-Authentication.gcno
+        -:    0:Data:test_auth-Authentication.gcda
+        -:    0:Runs:3
+        -:    1:
+        -:    2:#include "Authentication.h"
+        -:    3:
+        -:    4:#include <iostream>
+        -:    5:#include <sstream>
+        -:    6:#include <iomanip>
+        -:    7:#include <limits>
+        -:    8:
+        -:    9:#include <openssl/evp.h>
+        -:   10:#include <openssl/rand.h>
+        -:   11:
+        -:   12:using namespace std;
+        -:   13:
+        -:   14:namespace
+        -:   15:{
+        -:   16:    const int ITERATIONS = 210000;
+        -:   17:    const int SALT_SIZE = 16;
+        -:   18:    const int HASH_SIZE = 32;
+        -:   19:
+        -:   20:    // Convert binary data into hexadecimal
+       54:   21:    string toHex(const unsigned char* data, int length)
+        -:   22:    {
+       54:   23:        stringstream ss;
+        -:   24:
+       54:   25:        ss << hex << setfill('0');
+        -:   26:
+     1350:   27:        for (int i = 0; i < length; i++)
+        -:   28:        {
+     1296:   29:            ss << setw(2) << static_cast<int>(data[i]);
+        -:   30:        }
+        -:   31:
+      108:   32:        return ss.str();
+       54:   33:    }
+        -:   34:
+        -:   35:    // Convert hexadecimal into binary
+       12:   36:    bool fromHex(
+        -:   37:        const string& hexString,
+        -:   38:        unsigned char* output,
+        -:   39:        int outputSize)
+        -:   40:    {
+       12:   41:        if (hexString.size() != outputSize * 2)
+    #####:   42:            return false;
+        -:   43:
+      300:   44:        for (int i = 0; i < outputSize; i++)
+        -:   45:        {
+        -:   46:            try
+        -:   47:            {
+      288:   48:                output[i] = static_cast<unsigned char>(
+      288:   49:                    stoi(hexString.substr(i * 2, 2), nullptr, 16)
+        -:   50:                );
+        -:   51:            }
+    =====:   52:            catch (...)
+        -:   53:            {
+    =====:   54:                return false;
+    =====:   55:            }
+        -:   56:        }
+        -:   57:
+       12:   58:        return true;
+        -:   59:    }
+        -:   60:}
+        -:   61:
+        -:   62:// Constructor
+       21:   63:Authentication::Authentication(Database& db)
+       21:   64:    : database(db)
+        -:   65:{
+       21:   66:}
+        -:   67:
+        -:   68:// Generate secure password hash
+       27:   69:string Authentication::hashPassword(const string& password)
+        -:   70:{
+        -:   71:    unsigned char salt[SALT_SIZE];
+        -:   72:    unsigned char hash[HASH_SIZE];
+        -:   73:
+       27:   74:    if (RAND_bytes(salt, SALT_SIZE) != 1)
+    #####:   75:        return "";
+        -:   76:
+       54:   77:    if (PKCS5_PBKDF2_HMAC(
+        -:   78:            password.c_str(),
+       27:   79:            static_cast<int>(password.size()),
+        -:   80:            salt,
+        -:   81:            SALT_SIZE,
+        -:   82:            ITERATIONS,
+        -:   83:            EVP_sha256(),
+        -:   84:            HASH_SIZE,
+       27:   85:            hash) != 1)
+        -:   86:    {
+    #####:   87:        return "";
+        -:   88:    }
+        -:   89:
+       54:   90:    return toHex(salt, SALT_SIZE) + "$" +
+       81:   91:           toHex(hash, HASH_SIZE);
+        -:   92:}
+        -:   93:
+        -:   94:// Verify password
+        6:   95:bool Authentication::verifyPassword(
+        -:   96:    const string& password,
+        -:   97:    const string& storedHash)
+        -:   98:{
+        6:   99:    size_t separator = storedHash.find('$');
+        -:  100:
+        6:  101:    if (separator == string::npos)
+    #####:  102:        return false;
+        -:  103:
+        6:  104:    string saltHex = storedHash.substr(0, separator);
+        6:  105:    string hashHex = storedHash.substr(separator + 1);
+        -:  106:
+        -:  107:    unsigned char salt[SALT_SIZE];
+        -:  108:    unsigned char originalHash[HASH_SIZE];
+        -:  109:    unsigned char newHash[HASH_SIZE];
+        -:  110:
+      12*:  111:    if (!fromHex(saltHex, salt, SALT_SIZE) ||
+        6:  112:        !fromHex(hashHex, originalHash, HASH_SIZE))
+        -:  113:    {
+    #####:  114:        return false;
+        -:  115:    }
+        -:  116:
+       12:  117:    if (PKCS5_PBKDF2_HMAC(
+        -:  118:            password.c_str(),
+        6:  119:            static_cast<int>(password.size()),
+        -:  120:            salt,
+        -:  121:            SALT_SIZE,
+        -:  122:            ITERATIONS,
+        -:  123:            EVP_sha256(),
+        -:  124:            HASH_SIZE,
+        6:  125:            newHash) != 1)
+        -:  126:    {
+    #####:  127:        return false;
+        -:  128:    }
+        -:  129:
+        6:  130:    return CRYPTO_memcmp(
+        -:  131:        originalHash,
+        -:  132:        newHash,
+        -:  133:        HASH_SIZE
+        6:  134:    ) == 0;
+        6:  135:}
+        -:  136:
+        -:  137:// Create user account
+       27:  138:bool Authentication::createUser(
+        -:  139:    const string& username,
+        -:  140:    const string& password,
+        -:  141:    const string& role)
+        -:  142:{
+       54:  143:    if (username.empty() ||
+       54:  144:        username.size() > 50 ||
+      81*:  145:        password.size() < 8 ||
+       27:  146:        password.size() > 128)
+        -:  147:    {
+    #####:  148:        cout << "Invalid username or password length!\n";
+    #####:  149:        return false;
+        -:  150:    }
+        -:  151:
+       27:  152:    string passwordHash = hashPassword(password);
+        -:  153:
+       27:  154:    if (passwordHash.empty())
+        -:  155:    {
+    #####:  156:        cout << "Password hashing failed!\n";
+    #####:  157:        return false;
+        -:  158:    }
+        -:  159:
+       27:  160:    const char* sql =
+        -:  161:        "INSERT INTO users(username, password_hash, role) "
+        -:  162:        "VALUES(?, ?, ?);";
+        -:  163:
+       27:  164:    sqlite3_stmt* stmt = nullptr;
+        -:  165:
+       27:  166:    int result = sqlite3_prepare_v2(
+       27:  167:        database.getConnection(),
+        -:  168:        sql,
+        -:  169:        -1,
+        -:  170:        &stmt,
+        -:  171:        nullptr
+        -:  172:    );
+        -:  173:
+       27:  174:    if (result != SQLITE_OK)
+        -:  175:    {
+    #####:  176:        cout << "Database error!\n";
+    #####:  177:        return false;
+        -:  178:    }
+        -:  179:
+       27:  180:    sqlite3_bind_text(
+        -:  181:        stmt, 1, username.c_str(), -1, SQLITE_TRANSIENT
+        -:  182:    );
+        -:  183:
+       27:  184:    sqlite3_bind_text(
+        -:  185:        stmt, 2, passwordHash.c_str(), -1, SQLITE_TRANSIENT
+        -:  186:    );
+        -:  187:
+       27:  188:    sqlite3_bind_text(
+        -:  189:        stmt, 3, role.c_str(), -1, SQLITE_TRANSIENT
+        -:  190:    );
+        -:  191:
+       27:  192:    result = sqlite3_step(stmt);
+        -:  193:
+       27:  194:    sqlite3_finalize(stmt);
+        -:  195:
+       27:  196:    if (result != SQLITE_DONE)
+        -:  197:    {
+        3:  198:        cout << "Username already exists or database error!\n";
+        3:  199:        return false;
+        -:  200:    }
+        -:  201:
+       24:  202:    return true;
+       27:  203:}
+        -:  204:
+        -:  205:// Create first admin account
+       21:  206:bool Authentication::createInitialAdmin()
+        -:  207:{
+       21:  208:    const char* sql =
+        -:  209:        "SELECT COUNT(*) FROM users WHERE role = 'admin';";
+        -:  210:
+       21:  211:    sqlite3_stmt* stmt = nullptr;
+        -:  212:
+       21:  213:    if (sqlite3_prepare_v2(
+       21:  214:            database.getConnection(),
+       21:  215:            sql, -1, &stmt, nullptr) != SQLITE_OK)
+        -:  216:    {
+    #####:  217:        cout << "Database error!\n";
+    #####:  218:        return false;
+        -:  219:    }
+        -:  220:
+       21:  221:    int count = 0;
+        -:  222:
+       21:  223:    if (sqlite3_step(stmt) == SQLITE_ROW)
+       21:  224:        count = sqlite3_column_int(stmt, 0);
+        -:  225:
+       21:  226:    sqlite3_finalize(stmt);
+        -:  227:
+       21:  228:    if (count > 0)
+        3:  229:        return true;
+        -:  230:
+       18:  231:    string username, password;
+        -:  232:
+       18:  233:    cout << "\n===== INITIAL ADMIN SETUP =====\n";
+        -:  234:
+       18:  235:    cout << "Create Admin Username: ";
+       18:  236:    cin >> username;
+        -:  237:
+       18:  238:    cout << "Create Admin Password: ";
+       18:  239:    cin >> password;
+        -:  240:
+       36:  241:    if (createUser(username, password, "admin"))
+        -:  242:    {
+       18:  243:        cout << "\nAdmin account created successfully!\n";
+       18:  244:        return true;
+        -:  245:    }
+        -:  246:
+    #####:  247:    return false;
+       18:  248:}
+        -:  249:
+        -:  250:// Customer registration
+        9:  251:bool Authentication::registerCustomer()
+        -:  252:{
+        9:  253:    string username, password;
+        -:  254:
+        9:  255:    cout << "\n===== CUSTOMER REGISTRATION =====\n";
+        -:  256:
+        9:  257:    cout << "Enter Username: ";
+        9:  258:    cin >> username;
+        -:  259:
+        9:  260:    cout << "Enter Password (minimum 8 characters): ";
+        9:  261:    cin >> password;
+        -:  262:
+       18:  263:    if (createUser(username, password, "customer"))
+        -:  264:    {
+        6:  265:        cout << "\nCustomer registered successfully!\n";
+        6:  266:        return true;
+        -:  267:    }
+        -:  268:
+        3:  269:    return false;
+        9:  270:}
+        -:  271:
+        -:  272:// Login
+        9:  273:bool Authentication::login(UserSession& session)
+        -:  274:{
+        9:  275:    string username, password;
+        -:  276:
+        9:  277:    cout << "\n===== LOGIN =====\n";
+        -:  278:
+        9:  279:    cout << "Enter Username: ";
+        9:  280:    cin >> username;
+        -:  281:
+        9:  282:    cout << "Enter Password: ";
+        9:  283:    cin >> password;
+        -:  284:
+        9:  285:    const char* sql =
+        -:  286:        "SELECT user_id, username, password_hash, role, is_active "
+        -:  287:        "FROM users WHERE username = ?;";
+        -:  288:
+        9:  289:    sqlite3_stmt* stmt = nullptr;
+        -:  290:
+        9:  291:    if (sqlite3_prepare_v2(
+        9:  292:            database.getConnection(),
+        9:  293:            sql, -1, &stmt, nullptr) != SQLITE_OK)
+        -:  294:    {
+    #####:  295:        cout << "Database error!\n";
+    #####:  296:        return false;
+        -:  297:    }
+        -:  298:
+        9:  299:    sqlite3_bind_text(
+        -:  300:        stmt, 1, username.c_str(), -1, SQLITE_TRANSIENT
+        -:  301:    );
+        -:  302:
+        9:  303:    int result = sqlite3_step(stmt);
+        -:  304:
+        9:  305:    if (result != SQLITE_ROW)
+        -:  306:    {
+        3:  307:        cout << "\nInvalid username or password!\n";
+        3:  308:        sqlite3_finalize(stmt);
+        3:  309:        return false;
+        -:  310:    }
+        -:  311:
+        6:  312:    int userId = sqlite3_column_int(stmt, 0);
+        -:  313:
+        -:  314:    string storedUsername =
+        -:  315:        reinterpret_cast<const char*>(
+       12:  316:            sqlite3_column_text(stmt, 1)
+       12:  317:        );
+        -:  318:
+        -:  319:    string storedHash =
+        -:  320:        reinterpret_cast<const char*>(
+       12:  321:            sqlite3_column_text(stmt, 2)
+       12:  322:        );
+        -:  323:
+        -:  324:    string role =
+        -:  325:        reinterpret_cast<const char*>(
+       12:  326:            sqlite3_column_text(stmt, 3)
+        6:  327:        );
+        -:  328:
+        6:  329:    int active = sqlite3_column_int(stmt, 4);
+        -:  330:
+        6:  331:    sqlite3_finalize(stmt);
+        -:  332:
+        6:  333:    if (!active || !verifyPassword(password, storedHash))
+        -:  334:    {
+        3:  335:        cout << "\nInvalid username or password!\n";
+        3:  336:        return false;
+        -:  337:    }
+        -:  338:
+        3:  339:    session.userId = userId;
+        3:  340:    session.username = storedUsername;
+        3:  341:    session.role = role;
+        3:  342:    session.loggedIn = true;
+        -:  343:
+        3:  344:    cout << "\nLogin Successful!\n";
+        3:  345:    cout << "Welcome, " << session.username << "!\n";
+        3:  346:    cout << "Role: " << session.role << "\n";
+        -:  347:
+        3:  348:    return true;
+        9:  349:}

@@ -1,0 +1,92 @@
+[==========] Running 7 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 7 tests from AuthenticationTest
+[ RUN      ] AuthenticationTest.CreateInitialAdminSuccess
+Database connected successfully!
+All database tables created successfully!
+
+===== INITIAL ADMIN SETUP =====
+Create Admin Username: Create Admin Password: 
+Admin account created successfully!
+Database disconnected.
+[       OK ] AuthenticationTest.CreateInitialAdminSuccess (93 ms)
+[ RUN      ] AuthenticationTest.CreateInitialAdminAlreadyExists
+Database connected successfully!
+All database tables created successfully!
+
+===== INITIAL ADMIN SETUP =====
+Create Admin Username: Create Admin Password: 
+Admin account created successfully!
+Database disconnected.
+[       OK ] AuthenticationTest.CreateInitialAdminAlreadyExists (82 ms)
+[ RUN      ] AuthenticationTest.RegisterCustomerSuccess
+Database connected successfully!
+All database tables created successfully!
+
+===== INITIAL ADMIN SETUP =====
+Create Admin Username: Create Admin Password: 
+Admin account created successfully!
+
+===== CUSTOMER REGISTRATION =====
+Enter Username: Enter Password (minimum 8 characters): 
+Customer registered successfully!
+Database disconnected.
+[       OK ] AuthenticationTest.RegisterCustomerSuccess (143 ms)
+[ RUN      ] AuthenticationTest.RegisterCustomerDuplicate
+Database connected successfully!
+All database tables created successfully!
+
+===== INITIAL ADMIN SETUP =====
+Create Admin Username: Create Admin Password: 
+Admin account created successfully!
+
+===== CUSTOMER REGISTRATION =====
+Enter Username: Enter Password (minimum 8 characters): 
+Customer registered successfully!
+
+===== CUSTOMER REGISTRATION =====
+Enter Username: Enter Password (minimum 8 characters): Username already exists or database error!
+Database disconnected.
+[       OK ] AuthenticationTest.RegisterCustomerDuplicate (208 ms)
+[ RUN      ] AuthenticationTest.LoginSuccess
+Database connected successfully!
+All database tables created successfully!
+
+===== INITIAL ADMIN SETUP =====
+Create Admin Username: Create Admin Password: 
+Admin account created successfully!
+
+===== LOGIN =====
+Enter Username: Enter Password: 
+Login Successful!
+Welcome, admin!
+Role: admin
+Database disconnected.
+[       OK ] AuthenticationTest.LoginSuccess (148 ms)
+[ RUN      ] AuthenticationTest.LoginWrongPassword
+Database connected successfully!
+All database tables created successfully!
+
+===== INITIAL ADMIN SETUP =====
+Create Admin Username: Create Admin Password: 
+Admin account created successfully!
+
+===== LOGIN =====
+Enter Username: Enter Password: 
+Invalid username or password!
+Database disconnected.
+[       OK ] AuthenticationTest.LoginWrongPassword (144 ms)
+[ RUN      ] AuthenticationTest.LoginUnknownUser
+Database connected successfully!
+All database tables created successfully!
+
+===== LOGIN =====
+Enter Username: Enter Password: 
+Invalid username or password!
+Database disconnected.
+[       OK ] AuthenticationTest.LoginUnknownUser (4 ms)
+[----------] 7 tests from AuthenticationTest (827 ms total)
+
+[----------] Global test environment tear-down
+[==========] 7 tests from 1 test suite ran. (827 ms total)
+[  PASSED  ] 7 tests.

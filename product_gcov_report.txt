@@ -1,0 +1,61 @@
+File '/usr/include/c++/13/bits/basic_string.h'
+Lines executed:10.53% of 19
+Creating 'basic_string.h.gcov'
+
+File '/usr/include/c++/13/bits/new_allocator.h'
+Lines executed:33.33% of 3
+Creating 'new_allocator.h.gcov'
+
+File '/usr/include/c++/13/bits/allocator.h'
+Lines executed:66.67% of 3
+Creating 'allocator.h.gcov'
+
+File '/usr/include/c++/13/bits/alloc_traits.h'
+Lines executed:0.00% of 1
+Creating 'alloc_traits.h.gcov'
+
+File '/usr/include/c++/13/ext/alloc_traits.h'
+Lines executed:0.00% of 1
+Creating 'alloc_traits.h.gcov'
+
+File '/usr/include/c++/13/bits/move.h'
+Lines executed:66.67% of 6
+Creating 'move.h.gcov'
+
+File '/usr/include/c++/13/bits/basic_string.tcc'
+Lines executed:0.00% of 12
+Creating 'basic_string.tcc.gcov'
+
+File '/usr/include/c++/13/bits/stl_iterator_base_types.h'
+Lines executed:0.00% of 1
+Creating 'stl_iterator_base_types.h.gcov'
+
+File '/usr/include/c++/13/bits/stl_iterator_base_funcs.h'
+Lines executed:0.00% of 3
+Creating 'stl_iterator_base_funcs.h.gcov'
+
+File '/usr/include/c++/13/bits/char_traits.h'
+Lines executed:0.00% of 15
+Creating 'char_traits.h.gcov'
+
+File 'src/Product.cpp'
+Lines executed:91.21% of 182
+Creating 'Product.cpp.gcov'
+
+File '/usr/include/c++/13/limits'
+Lines executed:100.00% of 1
+Creating 'limits.gcov'
+
+File '/usr/include/c++/13/iomanip'
+Lines executed:100.00% of 4
+Creating 'iomanip.gcov'
+
+File '/usr/include/c++/13/bits/ios_base.h'
+Lines executed:100.00% of 21
+Creating 'ios_base.h.gcov'
+
+File '/usr/include/x86_64-linux-gnu/c++/13/bits/c++config.h'
+Lines executed:0.00% of 2
+Creating 'c++config.h.gcov'
+
+Lines executed:73.36% of 274

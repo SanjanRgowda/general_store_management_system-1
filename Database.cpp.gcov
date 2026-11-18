@@ -1,0 +1,165 @@
+        -:    0:Source:src/Database.cpp
+        -:    0:Graph:test_database-Database.gcno
+        -:    0:Data:test_database-Database.gcda
+        -:    0:Runs:1
+        -:    1:
+        -:    2:#include "Database.h"
+        -:    3:#include <iostream>
+        -:    4:
+        -:    5:using namespace std;
+        -:    6:
+        -:    7:// Constructor
+       16:    8:Database::Database()
+        -:    9:{
+       16:   10:    db = nullptr;
+       16:   11:}
+        -:   12:
+        -:   13:// Destructor
+       16:   14:Database::~Database()
+        -:   15:{
+       16:   16:    disconnect();
+       16:   17:}
+        -:   18:
+        -:   19:// Connect to SQLite database
+       16:   20:bool Database::connect()
+        -:   21:{
+       16:   22:    int result = sqlite3_open("database/store.db", &db);
+        -:   23:
+       16:   24:    if (result != SQLITE_OK)
+        -:   25:    {
+        -:   26:        cout << "Database connection failed: "
+    #####:   27:             << sqlite3_errmsg(db) << endl;
+    #####:   28:        return false;
+        -:   29:    }
+        -:   30:
+       16:   31:    cout << "Database connected successfully!" << endl;
+        -:   32:
+        -:   33:    // Enable foreign key support
+       32:   34:    return execute("PRAGMA foreign_keys = ON;");
+        -:   35:}
+        -:   36:
+        -:   37:// Execute SQL command
+      151:   38:bool Database::execute(const string& sql)
+        -:   39:{
+      151:   40:    char* errorMessage = nullptr;
+        -:   41:
+      151:   42:    int result = sqlite3_exec(
+        -:   43:        db,
+        -:   44:        sql.c_str(),
+        -:   45:        nullptr,
+        -:   46:        nullptr,
+        -:   47:        &errorMessage
+        -:   48:    );
+        -:   49:
+      151:   50:    if (result != SQLITE_OK)
+        -:   51:    {
+        6:   52:        cout << "SQL Error: " << errorMessage << endl;
+        6:   53:        sqlite3_free(errorMessage);
+        6:   54:        return false;
+        -:   55:    }
+        -:   56:
+      145:   57:    return true;
+        -:   58:}
+        -:   59:
+        -:   60:// Create all database tables
+       27:   61:bool Database::initializeTables()
+        -:   62:{
+       27:   63:    string sql = R"(
+        -:   64:
+        -:   65:    CREATE TABLE IF NOT EXISTS users
+        -:   66:    (
+        -:   67:        user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        -:   68:        username TEXT NOT NULL UNIQUE,
+        -:   69:        password_hash TEXT NOT NULL,
+        -:   70:        role TEXT NOT NULL CHECK(role IN ('admin', 'customer')),
+        -:   71:        is_active INTEGER DEFAULT 1,
+        -:   72:        created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        -:   73:    );
+        -:   74:
+        -:   75:    CREATE TABLE IF NOT EXISTS products
+        -:   76:    (
+        -:   77:        product_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        -:   78:        name TEXT NOT NULL,
+        -:   79:        quantity INTEGER NOT NULL CHECK(quantity >= 0),
+        -:   80:        price REAL NOT NULL CHECK(price >= 0),
+        -:   81:        is_active INTEGER DEFAULT 1,
+        -:   82:        created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        -:   83:    );
+        -:   84:
+        -:   85:    CREATE TABLE IF NOT EXISTS orders
+        -:   86:    (
+        -:   87:        order_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        -:   88:        user_id INTEGER NOT NULL,
+        -:   89:        total_amount REAL NOT NULL DEFAULT 0,
+        -:   90:        status TEXT DEFAULT 'completed',
+        -:   91:        order_date TEXT DEFAULT CURRENT_TIMESTAMP,
+        -:   92:
+        -:   93:        FOREIGN KEY(user_id)
+        -:   94:        REFERENCES users(user_id)
+        -:   95:    );
+        -:   96:
+        -:   97:    CREATE TABLE IF NOT EXISTS order_items
+        -:   98:    (
+        -:   99:        item_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        -:  100:        order_id INTEGER NOT NULL,
+        -:  101:        product_id INTEGER NOT NULL,
+        -:  102:        product_name TEXT NOT NULL,
+        -:  103:        quantity INTEGER NOT NULL CHECK(quantity > 0),
+        -:  104:        unit_price REAL NOT NULL,
+        -:  105:        line_total REAL NOT NULL,
+        -:  106:
+        -:  107:        FOREIGN KEY(order_id)
+        -:  108:        REFERENCES orders(order_id),
+        -:  109:
+        -:  110:        FOREIGN KEY(product_id)
+        -:  111:        REFERENCES products(product_id)
+        -:  112:    );
+        -:  113:
+        -:  114:    CREATE TABLE IF NOT EXISTS payments
+        -:  115:    (
+        -:  116:        payment_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        -:  117:        order_id INTEGER NOT NULL,
+        -:  118:        amount REAL NOT NULL,
+        -:  119:        payment_method TEXT NOT NULL,
+        -:  120:        payment_status TEXT DEFAULT 'completed',
+        -:  121:        payment_date TEXT DEFAULT CURRENT_TIMESTAMP,
+        -:  122:
+        -:  123:        FOREIGN KEY(order_id)
+        -:  124:        REFERENCES orders(order_id)
+        -:  125:    );
+        -:  126:
+        -:  127:    CREATE INDEX IF NOT EXISTS idx_orders_user
+        -:  128:    ON orders(user_id);
+        -:  129:
+        -:  130:    CREATE INDEX IF NOT EXISTS idx_order_items_order
+        -:  131:    ON order_items(order_id);
+        -:  132:
+        -:  133:    )";
+        -:  134:
+       27:  135:    if (execute(sql))
+        -:  136:    {
+       27:  137:        cout << "All database tables created successfully!"
+       27:  138:             << endl;
+       27:  139:        return true;
+        -:  140:    }
+        -:  141:
+    #####:  142:    return false;
+       27:  143:}
+        -:  144:
+        -:  145:// Return database connection
+        4:  146:sqlite3* Database::getConnection()
+        -:  147:{
+        4:  148:    return db;
+        -:  149:}
+        -:  150:
+        -:  151:// Close database
+       35:  152:void Database::disconnect()
+        -:  153:{
+       35:  154:    if (db != nullptr)
+        -:  155:    {
+       16:  156:        sqlite3_close(db);
+       16:  157:        db = nullptr;
+        -:  158:
+       16:  159:        cout << "Database disconnected." << endl;
+        -:  160:    }
+       35:  161:}

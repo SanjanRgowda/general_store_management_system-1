@@ -1,0 +1,53 @@
+include/Authentication.h:21:17: performance: inconclusive: Technically the member function 'Authentication::hashPassword' can be static (but you may consider moving to unnamed namespace). [functionStatic]
+    std::string hashPassword(const std::string& password);
+                ^
+src/Authentication.cpp:69:24: note: Technically the member function 'Authentication::hashPassword' can be static (but you may consider moving to unnamed namespace).
+string Authentication::hashPassword(const string& password)
+                       ^
+include/Authentication.h:21:17: note: Technically the member function 'Authentication::hashPassword' can be static (but you may consider moving to unnamed namespace).
+    std::string hashPassword(const std::string& password);
+                ^
+include/Authentication.h:23:10: performance: inconclusive: Technically the member function 'Authentication::verifyPassword' can be static (but you may consider moving to unnamed namespace). [functionStatic]
+    bool verifyPassword(
+         ^
+src/Authentication.cpp:95:22: note: Technically the member function 'Authentication::verifyPassword' can be static (but you may consider moving to unnamed namespace).
+bool Authentication::verifyPassword(
+                     ^
+include/Authentication.h:23:10: note: Technically the member function 'Authentication::verifyPassword' can be static (but you may consider moving to unnamed namespace).
+    bool verifyPassword(
+         ^
+include/Authentication.h:35:5: style: Class 'Authentication' has a constructor with 1 argument that is not explicit. [noExplicitConstructor]
+    Authentication(Database& db);
+    ^
+include/Customer.h:36:10: style: inconclusive: Technically the member function 'CustomerManager::viewCart' can be const. [functionConst]
+    void viewCart();
+         ^
+src/Customer.cpp:214:23: note: Technically the member function 'CustomerManager::viewCart' can be const.
+void CustomerManager::viewCart()
+                      ^
+include/Customer.h:36:10: note: Technically the member function 'CustomerManager::viewCart' can be const.
+    void viewCart();
+         ^
+src/Customer.cpp:179:27: style: Consider using std::accumulate algorithm instead of a raw loop. [useStlAlgorithm]
+            alreadyInCart += item.quantity;
+                          ^
+src/Customer.cpp:193:9: style: Consider using std::find_if algorithm instead of a raw loop. [useStlAlgorithm]
+        {
+        ^
+src/Customer.cpp:260:20: style: Consider using std::accumulate algorithm instead of a raw loop. [useStlAlgorithm]
+        grandTotal += item.quantity * item.price;
+                   ^
+include/Product.h:13:5: style: Class 'ProductManager' has a constructor with 1 argument that is not explicit. [noExplicitConstructor]
+    ProductManager(Database& db);
+    ^
+main.cpp:70:38: style: Variable 'session.loggedIn' is assigned a value that is never used. [unreadVariable]
+                    session.loggedIn = false;
+                                     ^
+src/test_authentication.cpp:12:0: style: The function 'SetUp' is never used. [unusedFunction]
+    void SetUp() override
+^
+src/test_authentication.cpp:25:0: style: The function 'TearDown' is never used. [unusedFunction]
+    void TearDown() override
+^
+nofile:0:0: information: Active checkers: 172/592 (use --checkers-report=<filename> to see details) [checkersReport]
+

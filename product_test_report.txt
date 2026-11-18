@@ -1,0 +1,247 @@
+[==========] Running 20 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 20 tests from ProductTest
+[ RUN      ] ProductTest.AddProductSuccess
+Database connected successfully!
+All database tables created successfully!
+
+===== ADD PRODUCT =====
+Enter Product Name: Enter Quantity: Enter Price: 
+Product Added Successfully!
+Product ID: 3
+Database disconnected.
+[       OK ] ProductTest.AddProductSuccess (13 ms)
+[ RUN      ] ProductTest.AddProductEmptyName
+Database connected successfully!
+All database tables created successfully!
+
+===== ADD PRODUCT =====
+Enter Product Name: Product name cannot be empty!
+Database disconnected.
+[       OK ] ProductTest.AddProductEmptyName (11 ms)
+[ RUN      ] ProductTest.AddProductInvalidQuantity
+Database connected successfully!
+All database tables created successfully!
+
+===== ADD PRODUCT =====
+Enter Product Name: Enter Quantity: Invalid quantity!
+Database disconnected.
+[       OK ] ProductTest.AddProductInvalidQuantity (23 ms)
+[ RUN      ] ProductTest.AddProductInvalidPrice
+Database connected successfully!
+All database tables created successfully!
+
+===== ADD PRODUCT =====
+Enter Product Name: Enter Quantity: Enter Price: Invalid price!
+Database disconnected.
+[       OK ] ProductTest.AddProductInvalidPrice (11 ms)
+[ RUN      ] ProductTest.DisplayProducts
+Database connected successfully!
+All database tables created successfully!
+
+========== STORE INVENTORY ==========
+ID        Product               Quantity    Price       Stock Value
+----------------------------------------------------------
+10        Rice                  100         50.00       5000.00
+11        Milk                  50          30.00       1500.00
+Database disconnected.
+[       OK ] ProductTest.DisplayProducts (12 ms)
+[ RUN      ] ProductTest.DisplayProductsEmptyInventory
+Database connected successfully!
+All database tables created successfully!
+
+========== STORE INVENTORY ==========
+ID        Product               Quantity    Price       Stock Value
+----------------------------------------------------------
+No products found!
+Database disconnected.
+[       OK ] ProductTest.DisplayProductsEmptyInventory (21 ms)
+[ RUN      ] ProductTest.SearchProductFound
+Database connected successfully!
+All database tables created successfully!
+
+Enter product name to search: 
+Product ID: 14
+Name: Rice
+Quantity: 100
+Price: Rs. 50.00
+Database disconnected.
+[       OK ] ProductTest.SearchProductFound (13 ms)
+[ RUN      ] ProductTest.SearchProductNotFound
+Database connected successfully!
+All database tables created successfully!
+
+Enter product name to search: 
+Product not found!
+Database disconnected.
+[       OK ] ProductTest.SearchProductNotFound (11 ms)
+[ RUN      ] ProductTest.UpdateProductSuccess
+Database connected successfully!
+All database tables created successfully!
+
+Enter Product ID to update: Enter New Product Name: Enter New Quantity: Enter New Price: 
+Product Not Found or No Changes Made!
+Database disconnected.
+[       OK ] ProductTest.UpdateProductSuccess (11 ms)
+[ RUN      ] ProductTest.UpdateProductInvalidId
+Database connected successfully!
+All database tables created successfully!
+
+Enter Product ID to update: Invalid ID!
+Database disconnected.
+[       OK ] ProductTest.UpdateProductInvalidId (10 ms)
+[ RUN      ] ProductTest.UpdateProductInvalidQuantity
+Database connected successfully!
+All database tables created successfully!
+
+Enter Product ID to update: Enter New Product Name: Enter New Quantity: Invalid quantity!
+Database disconnected.
+[       OK ] ProductTest.UpdateProductInvalidQuantity (11 ms)
+[ RUN      ] ProductTest.UpdateProductInvalidPrice
+Database connected successfully!
+All database tables created successfully!
+
+Enter Product ID to update: Enter New Product Name: Enter New Quantity: Enter New Price: Invalid price!
+Database disconnected.
+[       OK ] ProductTest.UpdateProductInvalidPrice (11 ms)
+[ RUN      ] ProductTest.UpdateProductNotFound
+Database connected successfully!
+All database tables created successfully!
+
+Enter Product ID to update: Enter New Product Name: Enter New Quantity: Enter New Price: 
+Product Not Found or No Changes Made!
+Database disconnected.
+[       OK ] ProductTest.UpdateProductNotFound (13 ms)
+[ RUN      ] ProductTest.DeleteProductSuccess
+Database connected successfully!
+All database tables created successfully!
+
+Enter Product ID to delete: 
+Product Not Found!
+Database disconnected.
+[       OK ] ProductTest.DeleteProductSuccess (10 ms)
+[ RUN      ] ProductTest.DeleteProductInvalidId
+Database connected successfully!
+All database tables created successfully!
+
+Enter Product ID to delete: Invalid ID!
+Database disconnected.
+[       OK ] ProductTest.DeleteProductInvalidId (13 ms)
+[ RUN      ] ProductTest.DeleteProductNotFound
+Database connected successfully!
+All database tables created successfully!
+
+Enter Product ID to delete: 
+Product Not Found!
+Database disconnected.
+[       OK ] ProductTest.DeleteProductNotFound (11 ms)
+[ RUN      ] ProductTest.AdminMenuLogout
+Database connected successfully!
+All database tables created successfully!
+
+========== ADMIN DASHBOARD ==========
+1. Add Product
+2. Display Products
+3. Search Product
+4. Update Product
+5. Delete Product
+0. Logout
+
+Enter Choice: 
+Admin Logged Out!
+Database disconnected.
+[       OK ] ProductTest.AdminMenuLogout (11 ms)
+[ RUN      ] ProductTest.AdminMenuInvalidChoice
+Database connected successfully!
+All database tables created successfully!
+
+========== ADMIN DASHBOARD ==========
+1. Add Product
+2. Display Products
+3. Search Product
+4. Update Product
+5. Delete Product
+0. Logout
+
+Enter Choice: 
+Invalid Choice!
+
+========== ADMIN DASHBOARD ==========
+1. Add Product
+2. Display Products
+3. Search Product
+4. Update Product
+5. Delete Product
+0. Logout
+
+Enter Choice: 
+Admin Logged Out!
+Database disconnected.
+[       OK ] ProductTest.AdminMenuInvalidChoice (11 ms)
+[ RUN      ] ProductTest.AdminMenuDisplayProducts
+Database connected successfully!
+All database tables created successfully!
+
+========== ADMIN DASHBOARD ==========
+1. Add Product
+2. Display Products
+3. Search Product
+4. Update Product
+5. Delete Product
+0. Logout
+
+Enter Choice: 
+========== STORE INVENTORY ==========
+ID        Product               Quantity    Price       Stock Value
+----------------------------------------------------------
+38        Rice                  100         50.00       5000.00
+39        Milk                  50          30.00       1500.00
+
+========== ADMIN DASHBOARD ==========
+1. Add Product
+2. Display Products
+3. Search Product
+4. Update Product
+5. Delete Product
+0. Logout
+
+Enter Choice: 
+Admin Logged Out!
+Database disconnected.
+[       OK ] ProductTest.AdminMenuDisplayProducts (11 ms)
+[ RUN      ] ProductTest.AdminMenuSearchProduct
+Database connected successfully!
+All database tables created successfully!
+
+========== ADMIN DASHBOARD ==========
+1. Add Product
+2. Display Products
+3. Search Product
+4. Update Product
+5. Delete Product
+0. Logout
+
+Enter Choice: 
+Enter product name to search: 
+Product ID: 40
+Name: Rice
+Quantity: 100
+Price: Rs. 50.00
+
+========== ADMIN DASHBOARD ==========
+1. Add Product
+2. Display Products
+3. Search Product
+4. Update Product
+5. Delete Product
+0. Logout
+
+Enter Choice: 
+Admin Logged Out!
+Database disconnected.
+[       OK ] ProductTest.AdminMenuSearchProduct (13 ms)
+[----------] 20 tests from ProductTest (260 ms total)
+
+[----------] Global test environment tear-down
+[==========] 20 tests from 1 test suite ran. (261 ms total)
+[  PASSED  ] 20 tests.

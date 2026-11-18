@@ -1,0 +1,250 @@
+[==========] Running 16 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 16 tests from CustomerTest
+[ RUN      ] CustomerTest.DisplayProducts
+Database connected successfully!
+All database tables created successfully!
+
+========== AVAILABLE PRODUCTS ==========
+ID        Name                  Stock       Price
+3         Rice                  50          45.00
+4         Milk                  20          30.00
+Database disconnected.
+[       OK ] CustomerTest.DisplayProducts (15 ms)
+[ RUN      ] CustomerTest.SearchProductFound
+Database connected successfully!
+All database tables created successfully!
+
+Enter product name: 
+Product ID: 5
+Name: Rice
+Stock: 50
+Price: Rs. 45.00
+Database disconnected.
+[       OK ] CustomerTest.SearchProductFound (19 ms)
+[ RUN      ] CustomerTest.SearchProductNotFound
+Database connected successfully!
+All database tables created successfully!
+
+Enter product name: 
+Product not found!
+Database disconnected.
+[       OK ] CustomerTest.SearchProductNotFound (21 ms)
+[ RUN      ] CustomerTest.AddToCartSuccess
+Database connected successfully!
+All database tables created successfully!
+
+========== AVAILABLE PRODUCTS ==========
+ID        Name                  Stock       Price
+9         Rice                  50          45.00
+10        Milk                  20          30.00
+
+Enter Product ID: Enter Quantity: 
+Product not found!
+Database disconnected.
+[       OK ] CustomerTest.AddToCartSuccess (25 ms)
+[ RUN      ] CustomerTest.AddToCartInvalidProductId
+Database connected successfully!
+All database tables created successfully!
+
+========== AVAILABLE PRODUCTS ==========
+ID        Name                  Stock       Price
+11        Rice                  50          45.00
+12        Milk                  20          30.00
+
+Enter Product ID: Invalid product ID!
+Database disconnected.
+[       OK ] CustomerTest.AddToCartInvalidProductId (25 ms)
+[ RUN      ] CustomerTest.AddToCartInvalidQuantity
+Database connected successfully!
+All database tables created successfully!
+
+========== AVAILABLE PRODUCTS ==========
+ID        Name                  Stock       Price
+13        Rice                  50          45.00
+14        Milk                  20          30.00
+
+Enter Product ID: Enter Quantity: Invalid quantity!
+Database disconnected.
+[       OK ] CustomerTest.AddToCartInvalidQuantity (19 ms)
+[ RUN      ] CustomerTest.AddToCartProductNotFound
+Database connected successfully!
+All database tables created successfully!
+
+========== AVAILABLE PRODUCTS ==========
+ID        Name                  Stock       Price
+15        Rice                  50          45.00
+16        Milk                  20          30.00
+
+Enter Product ID: Enter Quantity: 
+Product not found!
+Database disconnected.
+[       OK ] CustomerTest.AddToCartProductNotFound (17 ms)
+[ RUN      ] CustomerTest.AddToCartInsufficientStock
+Database connected successfully!
+All database tables created successfully!
+
+========== AVAILABLE PRODUCTS ==========
+ID        Name                  Stock       Price
+17        Rice                  50          45.00
+18        Milk                  20          30.00
+
+Enter Product ID: Enter Quantity: 
+Product not found!
+Database disconnected.
+[       OK ] CustomerTest.AddToCartInsufficientStock (15 ms)
+[ RUN      ] CustomerTest.ViewEmptyCart
+Database connected successfully!
+All database tables created successfully!
+
+Your cart is empty!
+Database disconnected.
+[       OK ] CustomerTest.ViewEmptyCart (14 ms)
+[ RUN      ] CustomerTest.ViewCartWithItems
+Database connected successfully!
+All database tables created successfully!
+
+========== AVAILABLE PRODUCTS ==========
+ID        Name                  Stock       Price
+21        Rice                  50          45.00
+22        Milk                  20          30.00
+
+Enter Product ID: Enter Quantity: 
+Product not found!
+
+Your cart is empty!
+Database disconnected.
+[       OK ] CustomerTest.ViewCartWithItems (28 ms)
+[ RUN      ] CustomerTest.EmptyOrderHistory
+Database connected successfully!
+All database tables created successfully!
+
+========== MY ORDER HISTORY ==========
+No previous orders!
+Database disconnected.
+[       OK ] CustomerTest.EmptyOrderHistory (20 ms)
+[ RUN      ] CustomerTest.ExistingOrderHistory
+Database connected successfully!
+All database tables created successfully!
+SQL Error: FOREIGN KEY constraint failed
+
+========== MY ORDER HISTORY ==========
+No previous orders!
+Database disconnected.
+[       OK ] CustomerTest.ExistingOrderHistory (17 ms)
+[ RUN      ] CustomerTest.CustomerMenuLogout
+Database connected successfully!
+All database tables created successfully!
+
+========== CUSTOMER DASHBOARD ==========
+1. View Products
+2. Search Products
+3. Add to Cart
+4. View Cart
+5. Checkout
+6. Order History
+0. Logout
+
+Enter Choice: 
+Customer Logged Out!
+Database disconnected.
+[       OK ] CustomerTest.CustomerMenuLogout (18 ms)
+[ RUN      ] CustomerTest.CustomerMenuInvalidChoice
+Database connected successfully!
+All database tables created successfully!
+
+========== CUSTOMER DASHBOARD ==========
+1. View Products
+2. Search Products
+3. Add to Cart
+4. View Cart
+5. Checkout
+6. Order History
+0. Logout
+
+Enter Choice: 
+Invalid Choice!
+
+========== CUSTOMER DASHBOARD ==========
+1. View Products
+2. Search Products
+3. Add to Cart
+4. View Cart
+5. Checkout
+6. Order History
+0. Logout
+
+Enter Choice: 
+Customer Logged Out!
+Database disconnected.
+[       OK ] CustomerTest.CustomerMenuInvalidChoice (20 ms)
+[ RUN      ] CustomerTest.CustomerMenuViewProducts
+Database connected successfully!
+All database tables created successfully!
+
+========== CUSTOMER DASHBOARD ==========
+1. View Products
+2. Search Products
+3. Add to Cart
+4. View Cart
+5. Checkout
+6. Order History
+0. Logout
+
+Enter Choice: 
+========== AVAILABLE PRODUCTS ==========
+ID        Name                  Stock       Price
+31        Rice                  50          45.00
+32        Milk                  20          30.00
+
+========== CUSTOMER DASHBOARD ==========
+1. View Products
+2. Search Products
+3. Add to Cart
+4. View Cart
+5. Checkout
+6. Order History
+0. Logout
+
+Enter Choice: 
+Customer Logged Out!
+Database disconnected.
+[       OK ] CustomerTest.CustomerMenuViewProducts (16 ms)
+[ RUN      ] CustomerTest.CustomerMenuSearchProduct
+Database connected successfully!
+All database tables created successfully!
+
+========== CUSTOMER DASHBOARD ==========
+1. View Products
+2. Search Products
+3. Add to Cart
+4. View Cart
+5. Checkout
+6. Order History
+0. Logout
+
+Enter Choice: 
+Enter product name: 
+Product ID: 33
+Name: Rice
+Stock: 50
+Price: Rs. 45.00
+
+========== CUSTOMER DASHBOARD ==========
+1. View Products
+2. Search Products
+3. Add to Cart
+4. View Cart
+5. Checkout
+6. Order History
+0. Logout
+
+Enter Choice: 
+Customer Logged Out!
+Database disconnected.
+[       OK ] CustomerTest.CustomerMenuSearchProduct (17 ms)
+[----------] 16 tests from CustomerTest (312 ms total)
+
+[----------] Global test environment tear-down
+[==========] 16 tests from 1 test suite ran. (313 ms total)
+[  PASSED  ] 16 tests.

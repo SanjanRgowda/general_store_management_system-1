@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites tests="16" failures="0" disabled="0" errors="0" time="0.123" timestamp="2026-11-18T19:52:28.699" name="AllTests">
+  <testsuite name="DatabaseTest" tests="16" failures="0" disabled="0" skipped="0" errors="0" time="0.123" timestamp="2026-11-18T19:52:28.699">
+    <testcase name="ConnectDatabase" file="src/test_database.cpp" line="31" status="run" result="completed" time="0.013" timestamp="2026-11-18T19:52:28.699" classname="DatabaseTest" />
+    <testcase name="ExecuteValidSQL" file="src/test_database.cpp" line="38" status="run" result="completed" time="0.003" timestamp="2026-11-18T19:52:28.713" classname="DatabaseTest" />
+    <testcase name="ExecuteInvalidSQL" file="src/test_database.cpp" line="50" status="run" result="completed" time="0.004" timestamp="2026-11-18T19:52:28.717" classname="DatabaseTest" />
+    <testcase name="InitializeTables" file="src/test_database.cpp" line="61" status="run" result="completed" time="0.003" timestamp="2026-11-18T19:52:28.721" classname="DatabaseTest" />
+    <testcase name="InitializeTablesTwice" file="src/test_database.cpp" line="70" status="run" result="completed" time="0.004" timestamp="2026-11-18T19:52:28.725" classname="DatabaseTest" />
+    <testcase name="GetConnection" file="src/test_database.cpp" line="83" status="run" result="completed" time="0.003" timestamp="2026-11-18T19:52:28.729" classname="DatabaseTest" />
+    <testcase name="InsertIntoUsers" file="src/test_database.cpp" line="93" status="run" result="completed" time="0.012" timestamp="2026-11-18T19:52:28.733" classname="DatabaseTest" />
+    <testcase name="DuplicateUsernameConstraint" file="src/test_database.cpp" line="111" status="run" result="completed" time="0.013" timestamp="2026-11-18T19:52:28.745" classname="DatabaseTest" />
+    <testcase name="InsertProduct" file="src/test_database.cpp" line="138" status="run" result="completed" time="0.011" timestamp="2026-11-18T19:52:28.759" classname="DatabaseTest" />
+    <testcase name="ProductNegativeQuantity" file="src/test_database.cpp" line="156" status="run" result="completed" time="0.009" timestamp="2026-11-18T19:52:28.770" classname="DatabaseTest" />
+    <testcase name="ProductNegativePrice" file="src/test_database.cpp" line="174" status="run" result="completed" time="0.003" timestamp="2026-11-18T19:52:28.780" classname="DatabaseTest" />
+    <testcase name="InvalidRole" file="src/test_database.cpp" line="192" status="run" result="completed" time="0.003" timestamp="2026-11-18T19:52:28.784" classname="DatabaseTest" />
+    <testcase name="InvalidOrderForeignKey" file="src/test_database.cpp" line="210" status="run" result="completed" time="0.004" timestamp="2026-11-18T19:52:28.788" classname="DatabaseTest" />
+    <testcase name="ValidOrderInsert" file="src/test_database.cpp" line="228" status="run" result="completed" time="0.015" timestamp="2026-11-18T19:52:28.792" classname="DatabaseTest" />
+    <testcase name="DisconnectDatabase" file="src/test_database.cpp" line="255" status="run" result="completed" time="0.01" timestamp="2026-11-18T19:52:28.808" classname="DatabaseTest" />
+    <testcase name="MultipleDisconnects" file="src/test_database.cpp" line="267" status="run" result="completed" time="0.004" timestamp="2026-11-18T19:52:28.819" classname="DatabaseTest" />
+  </testsuite>
+</testsuites>

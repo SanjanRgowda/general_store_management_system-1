@@ -1,0 +1,105 @@
+[==========] Running 16 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 16 tests from DatabaseTest
+[ RUN      ] DatabaseTest.ConnectDatabase
+Database connected successfully!
+All database tables created successfully!
+Database disconnected.
+[       OK ] DatabaseTest.ConnectDatabase (13 ms)
+[ RUN      ] DatabaseTest.ExecuteValidSQL
+Database connected successfully!
+All database tables created successfully!
+Database disconnected.
+[       OK ] DatabaseTest.ExecuteValidSQL (3 ms)
+[ RUN      ] DatabaseTest.ExecuteInvalidSQL
+Database connected successfully!
+All database tables created successfully!
+SQL Error: near "INVALID": syntax error
+Database disconnected.
+[       OK ] DatabaseTest.ExecuteInvalidSQL (4 ms)
+[ RUN      ] DatabaseTest.InitializeTables
+Database connected successfully!
+All database tables created successfully!
+All database tables created successfully!
+Database disconnected.
+[       OK ] DatabaseTest.InitializeTables (3 ms)
+[ RUN      ] DatabaseTest.InitializeTablesTwice
+Database connected successfully!
+All database tables created successfully!
+All database tables created successfully!
+All database tables created successfully!
+Database disconnected.
+[       OK ] DatabaseTest.InitializeTablesTwice (4 ms)
+[ RUN      ] DatabaseTest.GetConnection
+Database connected successfully!
+All database tables created successfully!
+Database disconnected.
+[       OK ] DatabaseTest.GetConnection (3 ms)
+[ RUN      ] DatabaseTest.InsertIntoUsers
+Database connected successfully!
+All database tables created successfully!
+All database tables created successfully!
+Database disconnected.
+[       OK ] DatabaseTest.InsertIntoUsers (12 ms)
+[ RUN      ] DatabaseTest.DuplicateUsernameConstraint
+Database connected successfully!
+All database tables created successfully!
+All database tables created successfully!
+SQL Error: UNIQUE constraint failed: users.username
+Database disconnected.
+[       OK ] DatabaseTest.DuplicateUsernameConstraint (13 ms)
+[ RUN      ] DatabaseTest.InsertProduct
+Database connected successfully!
+All database tables created successfully!
+All database tables created successfully!
+Database disconnected.
+[       OK ] DatabaseTest.InsertProduct (11 ms)
+[ RUN      ] DatabaseTest.ProductNegativeQuantity
+Database connected successfully!
+All database tables created successfully!
+All database tables created successfully!
+SQL Error: CHECK constraint failed: quantity >= 0
+Database disconnected.
+[       OK ] DatabaseTest.ProductNegativeQuantity (9 ms)
+[ RUN      ] DatabaseTest.ProductNegativePrice
+Database connected successfully!
+All database tables created successfully!
+All database tables created successfully!
+SQL Error: CHECK constraint failed: price >= 0
+Database disconnected.
+[       OK ] DatabaseTest.ProductNegativePrice (3 ms)
+[ RUN      ] DatabaseTest.InvalidRole
+Database connected successfully!
+All database tables created successfully!
+All database tables created successfully!
+SQL Error: CHECK constraint failed: role IN ('admin', 'customer')
+Database disconnected.
+[       OK ] DatabaseTest.InvalidRole (3 ms)
+[ RUN      ] DatabaseTest.InvalidOrderForeignKey
+Database connected successfully!
+All database tables created successfully!
+All database tables created successfully!
+SQL Error: FOREIGN KEY constraint failed
+Database disconnected.
+[       OK ] DatabaseTest.InvalidOrderForeignKey (4 ms)
+[ RUN      ] DatabaseTest.ValidOrderInsert
+Database connected successfully!
+All database tables created successfully!
+All database tables created successfully!
+Database disconnected.
+[       OK ] DatabaseTest.ValidOrderInsert (15 ms)
+[ RUN      ] DatabaseTest.DisconnectDatabase
+Database connected successfully!
+All database tables created successfully!
+Database disconnected.
+[       OK ] DatabaseTest.DisconnectDatabase (10 ms)
+[ RUN      ] DatabaseTest.MultipleDisconnects
+Database connected successfully!
+All database tables created successfully!
+Database disconnected.
+[       OK ] DatabaseTest.MultipleDisconnects (4 ms)
+[----------] 16 tests from DatabaseTest (123 ms total)
+
+[----------] Global test environment tear-down
+[==========] 16 tests from 1 test suite ran. (123 ms total)
+[  PASSED  ] 16 tests.
